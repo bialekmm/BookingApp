@@ -5,17 +5,20 @@ import io.github.bialekmm.bookingapp.entity.RoleEntity;
 import io.github.bialekmm.bookingapp.entity.UserEntity;
 import io.github.bialekmm.bookingapp.repository.RoleRepository;
 import io.github.bialekmm.bookingapp.repository.UserRepository;
+import io.github.bialekmm.bookingapp.service.AgeService;
 import io.github.bialekmm.bookingapp.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, AgeService {
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -87,5 +90,11 @@ public class UserServiceImpl implements UserService {
         userDto.setAddress(userEntity.getAddress());
         userDto.setEmail(userEntity.getEmail());
         return userDto;
+    }
+    @Override
+    public int ageFromBirthDate(String email, String birthDate) {
+        UserEntity user = userRepository.findByEmail(email);
+        birthDate = user.getBirthDate();
+        return Period.between(LocalDate.parse(birthDate,dt), LocalDate.now()).getYears();
     }
 }

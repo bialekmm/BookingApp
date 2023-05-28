@@ -43,13 +43,15 @@
       <th>First Name</th>
       <th>Last Name</th>
       <th>Email</th>
+      <th>Age</th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each = "user : ${users}">
+    <tr th:each = "user, userIndex : ${users}">
       <td th:text = "${user.firstName}"></td>
       <td th:text = "${user.lastName}"></td>
       <td th:text = "${user.email}"></td>
+      <td th:text = "${ages[userIndex.index]}"></td>
     </tr>
     </tbody>
   </table>

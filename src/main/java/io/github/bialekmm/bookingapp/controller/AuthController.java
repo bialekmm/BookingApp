@@ -2,6 +2,7 @@ package io.github.bialekmm.bookingapp.controller;
 
 import io.github.bialekmm.bookingapp.dto.UserDto;
 import io.github.bialekmm.bookingapp.entity.UserEntity;
+import io.github.bialekmm.bookingapp.service.AgeService;
 import io.github.bialekmm.bookingapp.service.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -9,14 +10,18 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Period;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 public class AuthController {
 
     private final UserService userService;
-    public AuthController(UserService userService) {
+    private final AgeService ageService;
+    public AuthController(UserService userService, AgeService ageService) {
         this.userService = userService;
+        this.ageService = ageService;
     }
 
     // handler method to handle home page request
@@ -53,11 +58,14 @@ public class AuthController {
     @GetMapping("/users")
     public String users(Model model, Authentication authentication){
         List<UserDto> users = userService.findAllUsers();
+        List<Integer> ages = users.stream().
+                map(user -> ageService.ageFromBirthDate(user.getEmail(), user.getBirthDate())).
+                collect(Collectors.toList());
         model.addAttribute("authentication",authentication);
         model.addAttribute("users", users);
+        model.addAttribute("ages", ages);
         return "users";
     }
-
     @GetMapping("/users/admin")
     public String admin(Model model){
         List<UserDto> users = userService.findAllUsers();
