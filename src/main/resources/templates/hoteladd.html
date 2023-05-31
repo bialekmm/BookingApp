@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Hotel Service</title>
+</head>
+<body>
+<div class="container">
+  <div class="row col-md-8 offset-md-2">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="text-center">Hotel add form</h2>
+      </div>
+      <div th:if="${param.success}">
+        <div class="alert alert-info">
+          You have successfully registered our app!
+        </div>
+      </div>
+      <div class="card-body">
+        <form
+                method="post"
+                role="form"
+                th:action="@{/hotel/add}"
+                th:object="${hotel}"
+        >
+          <div class="form-group mb-3">
+            <label class="form-label">Name</label>
+            <input
+                    class="form-control"
+                    id="name"
+                    name="name"
+                    placeholder="Enter name"
+                    th:field="*{name}"
+                    type="text"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Description</label>
+            <input
+                    class="form-control"
+                    id="description"
+                    name="description"
+                    placeholder="Enter description"
+                    th:field="*{description}"
+                    type="text"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Country</label>
+            <input
+                    class="form-control"
+                    id="country"
+                    name="country"
+                    placeholder="Enter country"
+                    th:field="*{country}"
+                    type="text"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">City</label>
+            <input
+                    class="form-control"
+                    id="city"
+                    name="city"
+                    placeholder="Enter city"
+                    th:field="*{city}"
+                    type="text"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Street</label>
+            <input
+                    class="form-control"
+                    id="street"
+                    name="street"
+                    placeholder="Enter street"
+                    th:field="*{street}"
+                    type="text"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Street Number</label>
+            <input
+                    class="form-control"
+                    id="streetNum"
+                    name="streetNum"
+                    placeholder="Enter street number"
+                    th:field="*{streetNum}"
+                    type="text"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Zip Code</label>
+            <input
+                    class="form-control"
+                    id="zipCode"
+                    name="zipCode"
+                    placeholder="Enter zip code"
+                    th:field="*{zipCode}"
+                    type="text"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Stars</label>
+            <input
+                    class="form-control"
+                    id="stars"
+                    name="stars"
+                    placeholder="Enter stars"
+                    th:field="*{stars}"
+                    type="number"
+            />
+          </div>
+          <div class="form-group">
+            <button class="btn btn-primary" type="submit">Add hotel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

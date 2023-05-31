@@ -14,19 +14,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-public class AuthController {
+public class UserController {
 
     private final UserService userService;
     private final AgeService ageService;
-    public AuthController(UserService userService, AgeService ageService) {
+    public UserController(UserService userService, AgeService ageService) {
         this.userService = userService;
         this.ageService = ageService;
-    }
-
-    // handler method to handle home page request
-    @GetMapping("/index")
-    public String home(){
-        return "index";
     }
 
     @GetMapping("/register")
@@ -42,14 +36,12 @@ public class AuthController {
         UserEntity existingUser = userService.findByEmail(userDto.getEmail());
 
         if(existingUser != null && existingUser.getEmail() != null && !existingUser.getEmail().isEmpty()){
-            result.rejectValue("email", null, "There is already an account registered with the same email");
+            result.rejectValue("email", "!email", "There is already an account registered with the same email");
         }
-
         if(result.hasErrors()){
             model.addAttribute("user", userDto);
             return "/register";
         }
-
         userService.saveUser(userDto);
         return "redirect:/register?success";
     }
@@ -65,24 +57,10 @@ public class AuthController {
         model.addAttribute("ages", ages);
         return "users";
     }
-    @GetMapping("/users/admin")
-    public String admin(Model model){
-        List<UserDto> users = userService.findAllUsers();
-        model.addAttribute("users", users);
-        return "admin";
-    }
 
     @GetMapping("/login")
     public String login(){
         return "login";
-    }
-
-    @GetMapping("/delete")
-    public String deleteUser(@RequestParam String email){
-        UserEntity user = userService.findByEmail(email);
-        user.getRoles().clear();
-        userService.deleteUser(user.getId());
-        return "redirect:/users";
     }
 
 }

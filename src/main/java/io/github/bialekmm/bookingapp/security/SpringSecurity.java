@@ -33,6 +33,9 @@ public class SpringSecurity {
                                 .requestMatchers("/users").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/users/admin").hasRole("ADMIN")
                                 .requestMatchers("/delete").hasRole("ADMIN")
+                                .requestMatchers("/hotel/add/**").hasRole("ADMIN")
+                                .requestMatchers("/hotel/list").hasAnyRole("USER","ADMIN")
+
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")
@@ -46,7 +49,6 @@ public class SpringSecurity {
                 );
         return http.build();
     }
-
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {

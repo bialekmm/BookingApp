@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Hotel Service</title>
+</head>
+<body>
+<h1>Hotel List</h1>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Country</th>
+    <th>City</th>
+    <th>Street</th>
+    <th>Street Number</th>
+    <th>Zip Code</th>
+    <th>Stars</th>
+  </tr>
+  <tr th:each="hotel : ${hotels}">
+    <td th:text="${hotel.id}"></td>
+    <td th:text="${hotel.name}"></td>
+    <td th:text="${hotel.description}"></td>
+    <td th:text="${hotel.country}"></td>
+    <td th:text="${hotel.city}"></td>
+    <td th:text="${hotel.street}"></td>
+    <td th:text="${hotel.streetNum}"></td>
+    <td th:text="${hotel.zipCode}"></td>
+    <td th:text="${hotel.stars}"></td>
+  </tr>
+</table>
+
+<h1>Room List</h1>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Guests</th>
+    <th>Hotel ID</th>
+  </tr>
+  <tr th:each="room : ${rooms}">
+    <td th:text="${room.id}"></td>
+    <td th:text="${room.name}"></td>
+    <td th:text="${room.description}"></td>
+    <td th:text="${room.guests}"></td>
+    <td th:text="${room.hotelId}"></td>
+  </tr>
+</table>
+</body>
+</html>
