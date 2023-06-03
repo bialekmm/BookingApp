@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <title>Hotel Service</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+  <div class="row col-md-8 offset-md-2">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="text-center">Room add form</h2>
+      </div>
+      <div th:if="${param.success}">
+        <div class="alert alert-info">
+          You have successfully added room!
+        </div>
+      </div>
+      <div class="card-body">
+        <form
+                method="post"
+                role="form"
+                th:action="@{/room/add}"
+                th:object="${room}"
+        >
+          <div class="form-group mb-3">
+            <label class="form-label" for="id">Room</label>
+            <select class="form-control" id="id" name="roomId" onchange="showCreateRoomForm(this)">
+              <option value="">-- Select Room --</option>
+              <option value="create_new">Create New Room</option>
+              <option th:each="room : ${rooms}" th:value="${room.id}" th:text="${room.name}"></option>
+            </select>
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label" for="hotelId">Hotel</label>
+            <select class="form-control" id="hotelId" name="hotelId">
+              <option value="">-- Select Hotel --</option>
+              <option th:each="hotel : ${hotels}" th:value="${hotel.id}" th:text="${hotel.name}"></option>
+            </select>
+          </div>
+          <div id="createRoomForm" style="display: none;">
+            <div class="form-group mb-3">
+              <label class="form-label">Name</label>
+              <input class="form-control"
+                     id="name"
+                     name="name"
+                     placeholder="Enter name"
+                     th:field="*{name}"
+                     type="text"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Description</label>
+              <input
+                      class="form-control"
+                      id="description"
+                      name="description"
+                      placeholder="Enter description"
+                      th:field="*{description}"
+                      type="text"
+              />
+            </div>
+            <div class="form-group mb-3">
+              <label class="form-label">Guests</label>
+              <input
+                      class="form-control"
+                      id="guests"
+                      name="guests"
+                      placeholder="Enter number of guests"
+                      th:field="*{guests}"
+                      type="number"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-primary" type="submit">Add room</button>
+          </div>
+
+          <script>
+            function showCreateRoomForm(selectElement) {
+              var createRoomForm = document.getElementById("createRoomForm");
+
+              if (selectElement.value === "create_new") {
+                createRoomForm.style.display = "block";
+              } else {
+                createRoomForm.style.display = "none";
+              }
+            }
+          </script>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

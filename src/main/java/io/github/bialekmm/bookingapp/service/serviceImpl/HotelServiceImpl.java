@@ -68,6 +68,29 @@ public class HotelServiceImpl implements HotelService, RoomService {
                 map(this::mapToHotelDto).
                 toList();
     }
+
+    @Override
+    public void addRoom(RoomDto roomDto, HotelDto hotelDto) {
+        Long roomId = roomDto.getId();
+        Long hotelId = hotelDto.getId();
+
+        Optional<RoomEntity> roomEntityOptional = roomRepository.findById(roomId);
+        Optional<HotelEntity> hotelEntityOptional = hotelRepository.findById(hotelId);
+
+        if (roomEntityOptional.isPresent() && hotelEntityOptional.isPresent()) {
+            RoomEntity roomEntity = roomEntityOptional.get();
+            HotelEntity hotelEntity = hotelEntityOptional.get();
+
+            if (!hotelEntity.getRooms().contains(roomEntity)) {
+                roomEntity.setHotel(hotelEntity);
+                hotelEntity.getRooms().add(roomEntity);
+
+                roomRepository.save(roomEntity);
+                hotelRepository.save(hotelEntity);
+            }
+        }
+    }
+
     @Override
     public List<RoomDto> findAllRooms() {
         List<RoomEntity> roomEntityList = roomRepository.findAll();
@@ -75,6 +98,8 @@ public class HotelServiceImpl implements HotelService, RoomService {
                 map(this::mapToRoomDto).
                 toList();
     }
+
+
     @Override
     public void saveHotel(HotelDto hotelDto) {
         HotelEntity hotelEntity = new HotelEntity();
@@ -116,5 +141,25 @@ public class HotelServiceImpl implements HotelService, RoomService {
     @Override
     public void deleteRoom(Long id) {
         roomRepository.deleteById(id);
+    }
+
+    @Override
+    public void assignRoomToHotel(String roomId, String hotelId) {
+        Long roomIdLong = Long.valueOf(roomId);
+        Long hotelIdLong = Long.valueOf(hotelId);
+        Optional<RoomEntity> roomEntityOptional = roomRepository.findById(roomIdLong);
+        Optional<HotelEntity> hotelEntityOptional = hotelRepository.findById(hotelIdLong);
+        if(roomEntityOptional.isPresent() && hotelEntityOptional.isPresent()){
+            RoomEntity roomEntity = roomEntityOptional.get();
+            HotelEntity hotelEntity = hotelEntityOptional.get();
+
+            RoomDto roomDto = mapToRoomDto(roomEntity);
+            HotelDto hotelDto = mapToHotelDto(hotelEntity);
+
+            addRoom(roomDto, hotelDto);
+        }
+        else {
+            System.out.println("Room or hotel not found");
+        }
     }
 }

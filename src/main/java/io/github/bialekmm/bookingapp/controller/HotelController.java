@@ -2,20 +2,17 @@ package io.github.bialekmm.bookingapp.controller;
 
 import io.github.bialekmm.bookingapp.dto.HotelDto;
 import io.github.bialekmm.bookingapp.dto.RoomDto;
-import io.github.bialekmm.bookingapp.dto.UserDto;
 import io.github.bialekmm.bookingapp.entity.HotelEntity;
-import io.github.bialekmm.bookingapp.entity.RoomEntity;
 import io.github.bialekmm.bookingapp.service.HotelService;
 import io.github.bialekmm.bookingapp.service.RoomService;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 public class HotelController {
@@ -31,13 +28,16 @@ public class HotelController {
     public String users(Model model){
         List<HotelDto> hotels = hotelService.findAllHotels();
         List<RoomDto> rooms = roomService.findAllRooms();
+        List<String> roomNames = rooms.stream().
+                map(RoomDto::getName).
+                toList();
+        model.addAttribute("roomNames", roomNames);
         model.addAttribute("hotels", hotels);
         model.addAttribute("rooms", rooms);
         return "hotellist";
     }
     @GetMapping("/hotel/add")
     public String showHotelForm(Model model){
-        // create model object to store form data
         HotelEntity hotel = new HotelEntity();
         model.addAttribute("hotel", hotel);
         return "hoteladd";
@@ -50,9 +50,32 @@ public class HotelController {
 
     @GetMapping("/room/add")
     public String showRoomForm(Model model){
-        // create model object to store form data
-        RoomEntity room = new RoomEntity();
+        RoomDto room = new RoomDto();
+        List<HotelDto> hotels = hotelService.findAllHotels();
+        List<RoomDto> rooms = roomService.findAllRooms();
+        model.addAttribute("rooms", rooms);
+        model.addAttribute("hotels", hotels);
         model.addAttribute("room", room);
-        return "hoteladd";
+        return "roomadd";
+    }
+    @PostMapping("/room/add")
+    public String addRoom(@ModelAttribute("room") RoomDto roomDto, @RequestParam("roomId") String roomId, @RequestParam("hotelId") String hotelId){
+        List<RoomDto> rooms = roomService.findAllRooms();
+        if(roomId.equals("create_new")){
+            roomService.saveRoom(roomDto);
+        }
+        else
+            roomService.assignRoomToHotel(roomId, hotelId);
+        return "redirect:/room/add?success";
+    }
+    @GetMapping("/hotel/delete")
+    public String deleteHotel(@RequestParam Long id){
+        hotelService.deleteHotel(id);
+        return "redirect:/hotel/list";
+    }
+    @GetMapping("/room/delete")
+    public String deleteRoom(@RequestParam Long id){
+        roomService.deleteRoom(id);
+        return "redirect:/hotel/list";
     }
 }

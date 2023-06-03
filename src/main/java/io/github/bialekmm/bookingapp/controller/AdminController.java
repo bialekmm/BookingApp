@@ -15,6 +15,7 @@ public class AdminController {
 
     private final UserService userService;
 
+
     public AdminController(UserService userService) {
         this.userService = userService;
     }
@@ -33,4 +34,5 @@ public class AdminController {
         userService.deleteUser(user.getId());
         return "redirect:/users";
     }
+
 }
