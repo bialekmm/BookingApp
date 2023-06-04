@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Controller
 public class HotelController {
@@ -28,9 +32,9 @@ public class HotelController {
     public String users(Model model){
         List<HotelDto> hotels = hotelService.findAllHotels();
         List<RoomDto> rooms = roomService.findAllRooms();
-        List<String> roomNames = rooms.stream().
-                map(RoomDto::getName).
-                toList();
+        List<String> roomNames = rooms.stream()
+                .map(RoomDto::getName)
+                .toList();
         model.addAttribute("roomNames", roomNames);
         model.addAttribute("hotels", hotels);
         model.addAttribute("rooms", rooms);
@@ -53,14 +57,25 @@ public class HotelController {
         RoomDto room = new RoomDto();
         List<HotelDto> hotels = hotelService.findAllHotels();
         List<RoomDto> rooms = roomService.findAllRooms();
-        model.addAttribute("rooms", rooms);
+        Set<String> uniqueRoomNames = rooms.stream()
+                .map(RoomDto::getName)
+                .collect(Collectors.toSet());
+
+        List<RoomDto> uniqueRooms = uniqueRoomNames.stream()
+                        .map(name -> rooms.stream()
+                                .filter(roomDto -> roomDto != null && roomDto.getName().equals(name))
+                                .findFirst()
+                                        .orElse(null))
+                                .filter(Objects::nonNull)
+                                        .toList();
+
+        model.addAttribute("rooms", uniqueRooms);
         model.addAttribute("hotels", hotels);
         model.addAttribute("room", room);
         return "roomadd";
     }
     @PostMapping("/room/add")
     public String addRoom(@ModelAttribute("room") RoomDto roomDto, @RequestParam("roomId") String roomId, @RequestParam("hotelId") String hotelId){
-        List<RoomDto> rooms = roomService.findAllRooms();
         if(roomId.equals("create_new")){
             roomService.saveRoom(roomDto);
         }

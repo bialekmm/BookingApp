@@ -78,16 +78,17 @@ public class HotelServiceImpl implements HotelService, RoomService {
         Optional<HotelEntity> hotelEntityOptional = hotelRepository.findById(hotelId);
 
         if (roomEntityOptional.isPresent() && hotelEntityOptional.isPresent()) {
-            RoomEntity roomEntity = roomEntityOptional.get();
+            RoomEntity roomEntity = new RoomEntity();
             HotelEntity hotelEntity = hotelEntityOptional.get();
 
-            if (!hotelEntity.getRooms().contains(roomEntity)) {
-                roomEntity.setHotel(hotelEntity);
-                hotelEntity.getRooms().add(roomEntity);
+            roomEntity.setName(roomEntityOptional.get().getName());
+            roomEntity.setGuests(roomEntityOptional.get().getGuests());
+            roomEntity.setDescription(roomEntityOptional.get().getDescription());
+            roomEntity.setHotel(hotelEntity);
+            hotelEntity.getRooms().add(roomEntity);
 
-                roomRepository.save(roomEntity);
-                hotelRepository.save(hotelEntity);
-            }
+            roomRepository.save(roomEntity);
+            hotelRepository.save(hotelEntity);
         }
     }
 
@@ -98,7 +99,6 @@ public class HotelServiceImpl implements HotelService, RoomService {
                 map(this::mapToRoomDto).
                 toList();
     }
-
 
     @Override
     public void saveHotel(HotelDto hotelDto) {
