@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>Booking App</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" th:href="@{/index}">Booking App</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li sec:authorize="isAnonymous()" class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/register}">Register</a>
+        </li>
+        <li sec:authorize="isAnonymous()" class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/login}">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/hotel/list}">Hotels</a>
+        </li>
+        <li sec:authorize="isAuthenticated()" class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/logout}">Logout</a>
+        </li>
+        <li sec:authorize="hasRole('ROLE_USER')" class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/users}">Users</a>
+        </li>
+        <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/users/admin}">Users</a>
+        </li>
+        <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/hotel/add}">Add hotel</a>
+        </li>
+        <li sec:authorize="hasRole('ROLE_ADMIN')" class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/room/add}">Add room</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<div class="container">
+  <div class="row col-md-8 offset-md-2">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="text-center">Hotel add form</h2>
+      </div>
+      <div th:if="${param.success}">
+        <div class="alert alert-info">
+          You have successfully registered our app!
+        </div>
+      </div>
+      <div class="card-body">
+        <form
+                method="post"
+                role="form"
+                th:action="@{/reservation/add}"
+                th:object="${reservation}"
+        >
+          <div class="form-group mb-3">
+            <label class="form-label">Name</label>
+            <input
+                    class="form-control"
+                    id="name"
+                    name="name"
+                    placeholder="Enter name"
+                    th:field="*{name}"
+                    type="text"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Description</label>
+            <input
+                    class="form-control"
+                    id="description"
+                    name="description"
+                    placeholder="Enter description"
+                    th:field="*{description}"
+                    type="text"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Country</label>
+            <input
+                    class="form-control"
+                    id="country"
+                    name="country"
+                    placeholder="Enter country"
+                    th:field="*{country}"
+                    type="text"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">City</label>
+            <input
+                    class="form-control"
+                    id="city"
+                    name="city"
+                    placeholder="Enter city"
+                    th:field="*{city}"
+                    type="text"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Street</label>
+            <input
+                    class="form-control"
+                    id="street"
+                    name="street"
+                    placeholder="Enter street"
+                    th:field="*{street}"
+                    type="text"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Street Number</label>
+            <input
+                    class="form-control"
+                    id="streetNum"
+                    name="streetNum"
+                    placeholder="Enter street number"
+                    th:field="*{streetNum}"
+                    type="text"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Zip Code</label>
+            <input
+                    class="form-control"
+                    id="zipCode"
+                    name="zipCode"
+                    placeholder="Enter zip code"
+                    th:field="*{zipCode}"
+                    type="text"
+            />
+          </div>
+          <div class="form-group mb-3">
+            <label class="form-label">Stars</label>
+            <input
+                    class="form-control"
+                    id="stars"
+                    name="stars"
+                    placeholder="Enter stars"
+                    th:field="*{stars}"
+                    type="number"
+            />
+          </div>
+          <div class="form-group">
+            <button class="btn btn-primary" type="submit">Add hotel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -9,6 +9,5 @@ public interface HotelService {
     List<HotelDto> findAllHotels();
     void addRoom(RoomDto roomDto, HotelDto hotelDto);
     void saveHotel(HotelDto hotelDto);
-
     void deleteHotel(Long id);
 }

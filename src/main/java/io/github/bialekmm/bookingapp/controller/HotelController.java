@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Controller
@@ -29,7 +28,7 @@ public class HotelController {
     }
 
     @GetMapping("/hotel/list")
-    public String users(Model model){
+    public String hotels(Model model){
         List<HotelDto> hotels = hotelService.findAllHotels();
         List<RoomDto> rooms = roomService.findAllRooms();
         List<String> roomNames = rooms.stream()
