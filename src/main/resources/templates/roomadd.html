@@ -76,7 +76,7 @@
             <label class="form-label" for="hotelId">Hotel</label>
             <select class="form-control" id="hotelId" name="hotelId">
               <option value="">-- Select Hotel --</option>
-              <option th:each="hotel : ${hotels}" th:value="${hotel.id}" th:text="${hotel.name}"></option>
+              <option th:each="hotel : ${hotels}" th:value="${hotel.id}" th:text="${hotel.name}" th:selected="${hotel.id == hotelId}"></option>
             </select>
           </div>
           <div id="createRoomForm" style="display: none;">

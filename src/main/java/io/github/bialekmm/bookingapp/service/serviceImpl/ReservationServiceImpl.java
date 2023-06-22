@@ -1,6 +1,7 @@
 package io.github.bialekmm.bookingapp.service.serviceImpl;
 
 import io.github.bialekmm.bookingapp.dto.ReservationDto;
+import io.github.bialekmm.bookingapp.dto.RoomDto;
 import io.github.bialekmm.bookingapp.entity.ReservationEntity;
 import io.github.bialekmm.bookingapp.entity.RoomEntity;
 import io.github.bialekmm.bookingapp.entity.UserEntity;
@@ -51,8 +52,11 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public ReservationDto findByRoom(RoomEntity room) {
-        return mapToReservationDto(reservationRepository.findByRoom(room));
+    public List<ReservationDto> findByRoom(RoomEntity room) {
+        List<ReservationEntity> reservationEntities = reservationRepository.findByRoom(room);
+        return reservationEntities.stream().
+                map(this::mapToReservationDto).
+                toList();
     }
 
     @Override
@@ -73,6 +77,7 @@ public class ReservationServiceImpl implements ReservationService {
             UserEntity userEntity = userEntityOptional.get();
             reservationEntity.setUser(userEntity);
         }
+        reservationRepository.save(reservationEntity);
     }
 
     @Override
@@ -80,3 +85,5 @@ public class ReservationServiceImpl implements ReservationService {
         reservationRepository.deleteById(id);
     }
 }
+
+

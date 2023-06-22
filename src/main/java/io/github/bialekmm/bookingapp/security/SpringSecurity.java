@@ -37,6 +37,7 @@ public class SpringSecurity {
                                 .requestMatchers("/hotel/add/**").hasRole("ADMIN")
                                 .requestMatchers("/room/add/**").hasRole("ADMIN")
                                 .requestMatchers("/hotel/list").permitAll()
+                                .requestMatchers("/reservation/**").hasAnyRole("USER","ADMIN")
                                 .requestMatchers("/hotel/delete/**").hasRole("ADMIN")
                                 .requestMatchers("/room/delete/**").hasRole("ADMIN")
 

@@ -52,7 +52,7 @@ public class HotelController {
     }
 
     @GetMapping("/room/add")
-    public String showRoomForm(Model model){
+    public String showRoomForm(@RequestParam(name = "hotelId", required = false) Long hotelId,Model model){
         RoomDto room = new RoomDto();
         List<HotelDto> hotels = hotelService.findAllHotels();
         List<RoomDto> rooms = roomService.findAllRooms();
@@ -71,6 +71,7 @@ public class HotelController {
         model.addAttribute("rooms", uniqueRooms);
         model.addAttribute("hotels", hotels);
         model.addAttribute("room", room);
+        model.addAttribute("hotelId", hotelId);
         return "roomadd";
     }
     @PostMapping("/room/add")

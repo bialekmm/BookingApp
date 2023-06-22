@@ -1,15 +1,21 @@
 package io.github.bialekmm.bookingapp.service.serviceImpl;
 
 import io.github.bialekmm.bookingapp.dto.HotelDto;
+import io.github.bialekmm.bookingapp.dto.ReservationDto;
 import io.github.bialekmm.bookingapp.dto.RoomDto;
 import io.github.bialekmm.bookingapp.entity.HotelEntity;
+import io.github.bialekmm.bookingapp.entity.ReservationEntity;
 import io.github.bialekmm.bookingapp.entity.RoomEntity;
 import io.github.bialekmm.bookingapp.repository.HotelRepository;
+import io.github.bialekmm.bookingapp.repository.ReservationRepository;
 import io.github.bialekmm.bookingapp.repository.RoomRepository;
 import io.github.bialekmm.bookingapp.service.HotelService;
 import io.github.bialekmm.bookingapp.service.RoomService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,9 +24,12 @@ public class HotelServiceImpl implements HotelService, RoomService {
 
     private final HotelRepository hotelRepository;
     private final RoomRepository roomRepository;
-    public HotelServiceImpl(HotelRepository hotelRepository, RoomRepository roomRepository) {
+    private final ReservationRepository reservationRepository;
+
+    public HotelServiceImpl(HotelRepository hotelRepository, RoomRepository roomRepository, ReservationRepository reservationRepository) {
         this.hotelRepository = hotelRepository;
         this.roomRepository = roomRepository;
+        this.reservationRepository = reservationRepository;
     }
     private HotelDto mapToHotelDto(HotelEntity hotelEntity) {
         HotelDto hotelDto = new HotelDto();
@@ -67,6 +76,32 @@ public class HotelServiceImpl implements HotelService, RoomService {
         return hotelEntities.stream().
                 map(this::mapToHotelDto).
                 toList();
+    }
+
+    @Override
+    public HotelDto findById(Long id) {
+        Optional<HotelEntity> hotelEntityOptional = hotelRepository.findById(id);
+        if(hotelEntityOptional.isPresent()){
+            HotelEntity hotelEntity = hotelEntityOptional.get();
+            return mapToHotelDto(hotelEntity);
+        }
+       return null;
+    }
+
+    @Override
+    public List<RoomDto> findByHotelId(Long id) {
+        Optional<HotelEntity> hotelEntityOptional = hotelRepository.findById(id);
+        if(hotelEntityOptional.isPresent()){
+            HotelEntity hotelEntity = hotelEntityOptional.get();
+            List<RoomEntity> roomEntityList = hotelEntity.getRooms();
+            return roomEntityList.stream().
+                    map(this::mapToRoomDto).
+                    toList();
+        }
+        else {
+            System.out.println("Room or hotel not found");
+            return Collections.emptyList();
+        }
     }
 
     @Override
@@ -161,5 +196,37 @@ public class HotelServiceImpl implements HotelService, RoomService {
         else {
             System.out.println("Room or hotel not found");
         }
+    }
+
+    @Override
+    public List<RoomDto> findAvailableRooms(Long hotelId, LocalDate startDate, LocalDate endDate, int numberOfGuests) {
+        List<RoomDto> availableRooms = new ArrayList<>();
+
+        List<RoomDto> rooms = findByHotelId(hotelId);
+
+        for (RoomDto room : rooms) {
+            if (isRoomAvailable(room.getId(), startDate, endDate) && room.getGuests() >= numberOfGuests) {
+                availableRooms.add(room);
+            }
+        }
+        return availableRooms;
+    }
+    @Override
+    public boolean isRoomAvailable(Long roomId, LocalDate startDate, LocalDate endDate) {
+        Optional<RoomEntity> roomEntityOptional = roomRepository.findById(roomId);
+        if(roomEntityOptional.isPresent()){
+            RoomEntity roomEntity = roomEntityOptional.get();
+            List<ReservationEntity> reservations = reservationRepository.findByRoom(roomEntity);
+            for (ReservationEntity reservation : reservations) {
+                if (isOverlapping(reservation.getStartDate(), reservation.getEndDate(), startDate, endDate)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    @Override
+    public boolean isOverlapping(LocalDate start1, LocalDate end1, LocalDate start2, LocalDate end2) {
+        return start1.isBefore(end2) && end1.isAfter(start2);
     }
 }
