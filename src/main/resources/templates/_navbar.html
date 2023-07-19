@@ -17,6 +17,9 @@
           <a class="nav-link active" aria-current="page" th:href="@{/hotel/list}">Hotels</a>
         </li>
         <li sec:authorize="isAuthenticated()" class="nav-item">
+          <a class="nav-link active" aria-current="page" th:href="@{/reservation/list}">Reservations</a>
+        </li>
+        <li sec:authorize="isAuthenticated()" class="nav-item">
           <a class="nav-link active" aria-current="page" th:href="@{/logout}">Logout</a>
         </li>
         <li sec:authorize="hasRole('ROLE_USER')" class="nav-item">

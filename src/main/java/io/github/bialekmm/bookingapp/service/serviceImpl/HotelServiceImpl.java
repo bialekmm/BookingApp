@@ -1,7 +1,6 @@
 package io.github.bialekmm.bookingapp.service.serviceImpl;
 
 import io.github.bialekmm.bookingapp.dto.HotelDto;
-import io.github.bialekmm.bookingapp.dto.ReservationDto;
 import io.github.bialekmm.bookingapp.dto.RoomDto;
 import io.github.bialekmm.bookingapp.entity.HotelEntity;
 import io.github.bialekmm.bookingapp.entity.ReservationEntity;
@@ -89,6 +88,11 @@ public class HotelServiceImpl implements HotelService, RoomService {
     }
 
     @Override
+    public HotelDto findHotelByRoomId(Long roomId) {
+        return mapToHotelDto(hotelRepository.findByRoomsId(roomId));
+    }
+
+    @Override
     public List<RoomDto> findByHotelId(Long id) {
         Optional<HotelEntity> hotelEntityOptional = hotelRepository.findById(id);
         if(hotelEntityOptional.isPresent()){
@@ -133,6 +137,16 @@ public class HotelServiceImpl implements HotelService, RoomService {
         return roomEntityList.stream().
                 map(this::mapToRoomDto).
                 toList();
+    }
+
+    @Override
+    public RoomDto findRoomById(Long id) {
+        Optional<RoomEntity> roomEntityOptional = roomRepository.findById(id);
+        if(roomEntityOptional.isPresent()){
+            RoomEntity roomEntity = roomEntityOptional.get();
+            return mapToRoomDto(roomEntity);
+        }
+        return null;
     }
 
     @Override

@@ -8,8 +8,9 @@ import java.util.List;
 
 public interface ReservationService {
     List<ReservationDto> findAllReservations();
-    ReservationDto findByUser(UserEntity user);
+    List<ReservationDto> findByUserEmail(String userEmail);
     List<ReservationDto> findByRoom(RoomEntity room);
     void saveReservation(ReservationDto reservationDto);
     void deleteReservation(Long id);
+    void changeReservationStatus(Long reservationId, String newStatus);
 }

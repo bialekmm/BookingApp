@@ -59,7 +59,7 @@
       <td th:if="${#authorization.expression('hasRole(''ROLE_USER'')')}">
         <a th:href="@{/reservation/add(hotelId=${hotel.id})}" class="btn btn-danger ml-2">Book</a>
       </td>
-    </tr>>
+    </tr>
     </tbody>
   </table>
 </div>

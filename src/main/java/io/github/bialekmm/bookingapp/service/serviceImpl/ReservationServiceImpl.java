@@ -46,10 +46,15 @@ public class ReservationServiceImpl implements ReservationService {
                 toList();
     }
 
+
     @Override
-    public ReservationDto findByUser(UserEntity user) {
-        return mapToReservationDto(reservationRepository.findByUser(user));
+    public List<ReservationDto> findByUserEmail(String userEmail) {
+        List<ReservationEntity> reservationEntities = reservationRepository.findByUserEmail(userEmail);
+        return reservationEntities.stream().
+                map(this::mapToReservationDto).
+                toList();
     }
+
 
     @Override
     public List<ReservationDto> findByRoom(RoomEntity room) {
@@ -83,6 +88,18 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public void deleteReservation(Long id) {
         reservationRepository.deleteById(id);
+    }
+
+    @Override
+    public void changeReservationStatus(Long reservationId, String newStatus) {
+        Optional<ReservationEntity> reservationOptional = reservationRepository.findById(reservationId);
+        if (reservationOptional.isPresent()) {
+            ReservationEntity reservation = reservationOptional.get();
+            reservation.setStatus(newStatus);
+            reservationRepository.save(reservation);
+        } else {
+            throw new IllegalArgumentException("Reservation with ID " + reservationId + " not found");
+        }
     }
 }
 

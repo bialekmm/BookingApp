@@ -13,76 +13,53 @@
 <div th:replace="~{_navbar :: navbar}"></div>
 <div class="container">
   <div class="row col-md-10">
-    <h2>List of Hotels</h2>
+    <h2>List of Reservations</h2>
   </div>
   <table class="table table-bordered table-hover">
     <thead class="table-dark">
     <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Description</th>
-      <th>Country</th>
-      <th>City</th>
-      <th>Street</th>
-      <th>Street Number</th>
-      <th>Zip Code</th>
-      <th>Stars</th>
-      <th >Rooms</th>
-      <th th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">Action</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="hotel : ${hotels}">
-      <td th:text="${hotel.id}"></td>
-      <td th:text="${hotel.name}"></td>
-      <td th:text="${hotel.description}"></td>
-      <td th:text="${hotel.country}"></td>
-      <td th:text="${hotel.city}"></td>
-      <td th:text="${hotel.street}"></td>
-      <td th:text="${hotel.streetNum}"></td>
-      <td th:text="${hotel.zipCode}"></td>
-      <td th:text="${hotel.stars}"></td>
-      <td>
-        <table>
-          <tbody>
-          <tr th:each="room : ${hotel.rooms}">
-            <td th:text="${room.name}"></td>
-          </tr>
-          </tbody>
-        </table>
-      </td>
-      <td th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-        <a th:href="@{/hotel/delete(id=${hotel.id})}" class="btn btn-danger ml-2">Delete</a>
-        <a th:href="@{/room/add}" class="btn btn-danger ml-2">Add room</a>
-      </td>
-    </tr>>
-    </tbody>
-  </table>
-</div>
-<div class="container">
-  <div class="row col-md-10">
-    <h2>List of Rooms</h2>
-  </div>
-  <table class="table table-bordered table-hover">
-    <thead class="table-dark">
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Description</th>
+      <th>Reservation ID</th>
+      <th>User</th>
+      <th>Hotel</th>
+      <th>Room</th>
+      <th>Start date</th>
+      <th>End date</th>
       <th>Guests</th>
-      <th>Hotel ID</th>
+      <th>Status</th>
+      <th th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">Change Status</th>
       <th th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">Action</th>
+
     </tr>
     </thead>
     <tbody>
-    <tr th:each="room : ${rooms}">
-      <td th:text="${room.id}"></td>
-      <td th:text="${room.name}"></td>
-      <td th:text="${room.description}"></td>
-      <td th:text="${room.guests}"></td>
-      <td th:text="${room.hotelId}"></td>
+    <tr th:each="reservation : ${reservations}">
+      <td th:text="${reservation.id}"></td>
+      <td>
+        <span th:text="${@userServiceImpl.findById(reservation.userId).get().firstName} + ' ' + ${@userServiceImpl.findById(reservation.userId).get().lastName}"></span>
+      </td>
+      <td>
+        <span th:text="${@hotelServiceImpl.findHotelByRoomId(reservation.roomId).name}"></span>
+      </td>
+      <td>
+        <span th:text="${@hotelServiceImpl.findRoomById(reservation.roomId).name}"></span>
+      </td>
+      <td th:text="${reservation.startDate}"></td>
+      <td th:text="${reservation.endDate}"></td>
+      <td th:text="${reservation.guests}"></td>
+      <td th:text="${reservation.status}"></td>
       <td th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
-        <a th:href="@{/room/delete(id=${room.id})}" class="btn btn-danger ml-2">Delete</a>
+        <form th:action="@{/reservation/changeStatus(id=${reservation.id})}" method="post">
+          <select class="form-control" name="status">
+            <option value="Confirmed">Confirmed</option>
+            <option value="Pending">Pending</option>
+            <option value="Cancelled">Cancelled</option>
+            <option value="Completed">Completed</option>
+          </select>
+          <button type="submit" class="btn btn-primary mt-2">Change</button>
+        </form>
+      </td>
+      <td th:if="${#authorization.expression('hasRole(''ROLE_ADMIN'')')}">
+        <a th:href="@{/reservation/delete(id=${reservation.id})}" class="btn btn-danger ml-2">Delete</a>
       </td>
     </tr>
     </tbody>
