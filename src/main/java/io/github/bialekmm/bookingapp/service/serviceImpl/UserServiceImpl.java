@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,17 +33,26 @@ public class UserServiceImpl implements UserService, AgeService {
     public List<UserDto> findAllUsers() {
         List<UserEntity> userEntities = userRepository.findAll();
         return userEntities.stream()
-                .map(userEntity -> mapToUserDto(userEntity))
+                .map(this::mapToUserDto)
                 .collect(Collectors.toList());
     }
     @Override
-    public UserEntity findByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public UserDto findByEmail(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email);
+        if (userEntity == null) {
+            return null;
+        }
+        return mapToUserDto(userEntity);
     }
 
     @Override
-    public Optional<UserEntity> findById(Long id) {
-        return userRepository.findById(id);
+    public UserDto findById(Long id) {
+        Optional<UserEntity> userEntityOptional = userRepository.findById(id);
+        if(userEntityOptional.isPresent()){
+            UserEntity userEntity = userEntityOptional.get();
+            return mapToUserDto(userEntity);
+        }
+        return null;
     }
 
     @Override
@@ -65,16 +74,16 @@ public class UserServiceImpl implements UserService, AgeService {
             RoleEntity role = new RoleEntity();
             if(role.getName()==null){
                 role.setName("ROLE_ADMIN");
-                user.setRoles(Arrays.asList(role));
+                user.setRoles(List.of(role));
             }
             if(roleRepository.findByName("ROLE_ADMIN") != null && roleRepository.findByName("ROLE_USER") == null){
                 role.setName("ROLE_USER");
-                user.setRoles(Arrays.asList(role));
+                user.setRoles(List.of(role));
             }
         }
         if(roleRepository.findByName("ROLE_ADMIN") != null && roleRepository.findByName("ROLE_USER") != null){
             RoleEntity role = roleRepository.findByName("ROLE_USER");
-            user.setRoles(Arrays.asList(role));
+            user.setRoles(Collections.singletonList(role));
         }
     }
 

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -40,5 +41,5 @@ public class HotelEntity {
     private int stars;
 
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<RoomEntity> rooms;
+    private List<RoomEntity> rooms = new ArrayList<>();
 }

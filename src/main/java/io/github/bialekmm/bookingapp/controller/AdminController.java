@@ -2,6 +2,7 @@ package io.github.bialekmm.bookingapp.controller;
 
 import io.github.bialekmm.bookingapp.dto.UserDto;
 import io.github.bialekmm.bookingapp.entity.UserEntity;
+import io.github.bialekmm.bookingapp.repository.UserRepository;
 import io.github.bialekmm.bookingapp.service.UserService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +15,12 @@ import java.util.List;
 public class AdminController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
 
-    public AdminController(UserService userService) {
+    public AdminController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/users/admin")
@@ -29,7 +32,7 @@ public class AdminController {
 
     @GetMapping("/delete")
     public String deleteUser(@RequestParam String email){
-        UserEntity user = userService.findByEmail(email);
+        UserEntity user = userRepository.findByEmail(email);
         user.getRoles().clear();
         userService.deleteUser(user.getId());
         return "redirect:/users";

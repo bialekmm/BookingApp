@@ -34,7 +34,7 @@ public class UserController {
 
     @PostMapping("/register/save")
     public String registration(@ModelAttribute("user") UserDto userDto, BindingResult result, Model model){
-        UserEntity existingUser = userService.findByEmail(userDto.getEmail());
+        UserDto existingUser = userService.findByEmail(userDto.getEmail());
 
         if(existingUser != null && existingUser.getEmail() != null && !existingUser.getEmail().isEmpty()){
             result.rejectValue("email", "!email", "There is already an account registered with the same email");

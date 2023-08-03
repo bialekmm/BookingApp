@@ -8,8 +8,8 @@ import java.util.Optional;
 
 public interface UserService {
     List<UserDto> findAllUsers();
-    UserEntity findByEmail(String email);
-    Optional<UserEntity> findById(Long id);
+    UserDto findByEmail(String email);
+    UserDto findById(Long id);
     void saveUser(UserDto userDto);
     void deleteUser(Long id);
 
